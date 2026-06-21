@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Analysis System using Machine Learning</title>
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="An enterprise-grade Student Performance Analysis System that leverages Machine Learning to predict academic success, analyze study habits, and generate personalized improvement strategies.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main Shell Layout -->
+    <div class="dashboard-shell">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo-glow"></div>
+                    <i data-lucide="brain-circuit" class="logo-icon"></i>
+                </div>
+                <div class="brand-info">
+                    <h2>SPAS <span class="badge-ai">AI</span></h2>
+                    <p>ML Prediction Engine</p>
+                </div>
+            </div>
+
+            <!-- Demo Data Loader Widget in Sidebar -->
+            <div class="demo-loader-widget">
+                <span class="widget-title"><i data-lucide="sparkles"></i> Quick Demo Load</span>
+                <p>Auto-fill profiles to test ML predictions:</p>
+                <div class="demo-buttons">
+                    <button class="btn-demo" id="btn-demo-star" title="High performing student, low risk"><i data-lucide="trophy"></i> Star Student</button>
+                    <button class="btn-demo" id="btn-demo-average" title="Average student, medium risk"><i data-lucide="users"></i> Average</button>
+                    <button class="btn-demo" id="btn-demo-risk" title="At risk student, high risk"><i data-lucide="alert-triangle"></i> At Risk</button>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active" id="nav-predict-tab" onclick="switchTab('predict')">
+                        <a href="#predict"><i data-lucide="text-cursor-input"></i> <span>Data Collection</span></a>
+                    </li>
+                    <li class="disabled" id="nav-dashboard-tab" onclick="switchTab('dashboard')">
+                        <a href="#dashboard"><i data-lucide="layout-dashboard"></i> <span>Analysis Hub</span></a>
+                    </li>
+                    <li id="nav-insights-tab" onclick="switchTab('insights')">
+                        <a href="#insights"><i data-lucide="line-chart"></i> <span>Model Metrics</span></a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle light/dark mode">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                    <span class="theme-text">Light Mode</span>
+                </button>
+                <div class="system-status">
+                    <div class="status-dot online"></div>
+                    <span>RF Model v1.2 Active</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Page Area -->
+        <main class="main-content">
+
+            <!-- PAGE 1: Student Information & Data Collection -->
+            <section id="page-predict" class="page-section active">
+                <header class="page-header">
+                    <div class="header-text">
+                        <div class="badge-tag">AI Analytics</div>
+                        <h1>Student Performance Analysis System</h1>
+                        <p class="subtitle">Predict academic performance using Machine Learning and receive personalized improvement recommendations.</p>
+                    </div>
+                    <div class="header-illustration">
+                        <div class="illustration-glow"></div>
+                        <i data-lucide="graduation-cap" class="illustration-icon"></i>
+                    </div>
+                </header>
+
+                <form id="student-form" onsubmit="event.preventDefault();" novalidate>
+                    <div class="form-grid">
+                        
+                        <!-- Student Personal Information Card -->
+                        <div class="glass-card card-personal-info">
+                            <div class="card-header-accent"></div>
+                            <div class="card-title-bar">
+                                <div class="card-icon-wrapper blue-icon"><i data-lucide="user"></i></div>
+                                <h3>Student Personal Info</h3>
+                            </div>
+                            <div class="card-body form-group-grid">
+                                <div class="form-field">
+                                    <label for="student-name">Student Name <span class="required">*</span></label>
+                                    <input type="text" id="student-name" placeholder="e.g. John Doe" required>
+                                </div>
+                                <div class="form-field">
+                                    <label for="student-id">Student ID <span class="required">*</span></label>
+                                    <input type="text" id="student-id" placeholder="e.g. STU-2026-981" required>
+                                </div>
+                                <div class="form-field">
+                                    <label for="student-age">Age <span class="required">*</span></label>
+                                    <input type="number" id="student-age" min="10" max="30" placeholder="e.g. 18" required>
+                                </div>
+                                <div class="form-field">
+                                    <label for="student-gender">Gender <span class="required">*</span></label>
+                                    <select id="student-gender" required>
+                                        <option value="" disabled selected>Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-field full-width">
+                                    <label for="student-class">Class / Grade <span class="required">*</span></label>
+                                    <select id="student-class" required>
+                                        <option value="" disabled selected>Select Grade Level</option>
+                                        <option value="Grade 9">Grade 9</option>
+                                        <option value="Grade 10">Grade 10</option>
+                                        <option value="Grade 11">Grade 11</option>
+                                        <option value="Grade 12">Grade 12</option>
+                                        <option value="University Undergrad">University Undergrad</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Academic Information Card -->
+                        <div class="glass-card card-academic-info">
+                            <div class="card-header-accent"></div>
+                            <div class="card-title-bar">
+                                <div class="card-icon-wrapper purple-icon"><i data-lucide="book-open"></i></div>
+                                <h3>Academic Information</h3>
+                            </div>
+                            <div class="card-body form-group-grid">
+                                <div class="form-field">
+                                    <label for="prev-score">Previous Exam Score (%) <span class="required">*</span></label>
+                                    <input type="number" id="prev-score" min="0" max="100" placeholder="e.g. 78" required>
+                                </div>
+                                <div class="form-field">
+                                    <label for="attendance-pct">Attendance Percentage (%) <span class="required">*</span></label>
+                                    <input type="number" id="attendance-pct" min="0" max="100" placeholder="e.g. 88" required>
+                                </div>
+                                <div class="form-field">
+                                    <label for="assignments-completed">Assignments Completed <span class="required">*</span></label>
+                                    <input type="number" id="assignments-completed" min="0" max="50" placeholder="e.g. 14" required>
+                                    <span class="field-subtext">(Out of 15 total assignments)</span>
+                                </div>
+                                <div class="form-field">
+                                    <label for="subjects-failed">Subjects Failed <span class="required">*</span></label>
+                                    <input type="number" id="subjects-failed" min="0" max="10" placeholder="e.g. 0" required>
+                                </div>
+                                <div class="form-field full-width">
+                                    <label for="internal-score">Internal Assessment Score <span class="required">*</span></label>
+                                    <input type="number" id="internal-score" min="0" max="30" placeholder="e.g. 24" required>
+                                    <span class="field-subtext">(Out of 30 total marks)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Study Habits Card -->
+                        <div class="glass-card card-study-habits">
+                            <div class="card-header-accent"></div>
+                            <div class="card-title-bar">
+                                <div class="card-icon-wrapper indigo-icon"><i data-lucide="clock"></i></div>
+                                <h3>Study Habits</h3>
+                            </div>
+                            <div class="card-body form-group-grid">
+                                <div class="form-field">
+                                    <label for="study-hours-daily">Daily Study Hours (Classes) <span class="required">*</span></label>
+                                    <input type="number" id="study-hours-daily" min="0" max="12" step="0.5" placeholder="e.g. 4" required>
+                                </div>
+                                <div class="form-field">
+                                    <label for="self-study-weekly">Weekly Self Study Hours <span class="required">*</span></label>
+                                    <input type="number" id="self-study-weekly" min="0" max="60" placeholder="e.g. 15" required>
+                                </div>
+                                <div class="form-field">
+                                    <label for="tuition-coaching">Tuition / Coaching Classes <span class="required">*</span></label>
+                                    <select id="tuition-coaching" required>
+                                        <option value="" disabled selected>Select Choice</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label for="exam-preparation">Exam Prep Level <span class="required">*</span></label>
+                                    <select id="exam-preparation" required>
+                                        <option value="" disabled selected>Select Level</option>
+                                        <option value="Low">Low / Unprepared</option>
+                                        <option value="Medium">Medium / Moderate</option>
+                                        <option value="High">High / Thorough</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Environmental Factors Card -->
+                        <div class="glass-card card-environmental">
+                            <div class="card-header-accent"></div>
+                            <div class="card-title-bar">
+                                <div class="card-icon-wrapper emerald-icon"><i data-lucide="globe"></i></div>
+                                <h3>Environmental Factors</h3>
+                            </div>
+                            <div class="card-body form-group-grid">
+                                <div class="form-field">
+                                    <label for="internet-access">Internet Access at Home <span class="required">*</span></label>
+                                    <select id="internet-access" required>
+                                        <option value="" disabled selected>Select Choice</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label for="extracurriculars">Extracurricular Activities <span class="required">*</span></label>
+                                    <select id="extracurriculars" required>
+                                        <option value="" disabled selected>Select Choice</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label for="parent-education">Parental Education Level <span class="required">*</span></label>
+                                    <select id="parent-education" required>
+                                        <option value="" disabled selected>Select Level</option>
+                                        <option value="High School">High School</option>
+                                        <option value="Bachelor">Bachelor's Degree</option>
+                                        <option value="Master">Master's Degree</option>
+                                        <option value="PhD">PhD / Doctorate</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label for="family-support">Family Academic Support <span class="required">*</span></label>
+                                    <select id="family-support" required>
+                                        <option value="" disabled selected>Select Level</option>
+                                        <option value="Low">Low Support</option>
+                                        <option value="Medium">Medium Support</option>
+                                        <option value="High">High Support</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lower Widget: Data Quality Indicator -->
+                    <div class="glass-card data-quality-widget">
+                        <div class="data-quality-layout">
+                            <div class="quality-score-circle">
+                                <svg class="progress-ring" width="80" height="80">
+                                    <circle class="progress-ring-bg" stroke="rgba(255,255,255,0.06)" stroke-width="6" fill="transparent" r="34" cx="40" cy="40"/>
+                                    <circle class="progress-ring-bar" id="data-quality-progress" stroke="#3b82f6" stroke-width="6" fill="transparent" r="34" cx="40" cy="40"/>
+                                </svg>
+                                <div class="progress-text" id="quality-pct-text">0%</div>
+                            </div>
+                            <div class="quality-info-details">
+                                <div class="quality-status-row">
+                                    <h4>Data Input Integrity Metrics</h4>
+                                    <span class="status-badge badge-warning" id="validation-status-badge">Incomplete Form</span>
+                                </div>
+                                <p class="warning-text" id="quality-warning-msg">Please fill all fields marked with an asterisk (*) to trigger prediction models.</p>
+                                <div class="fields-progress-meter">
+                                    <div class="meter-bar" id="input-completion-bar" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="clearPredictorForm()"><i data-lucide="refresh-cw"></i> Clear Form</button>
+                        <button type="submit" class="btn-primary" id="analyze-btn" disabled onclick="triggerMLAnalysis()">
+                            <span id="btn-text">Analyze Performance</span>
+                            <i data-lucide="cpu" id="btn-icon"></i>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+
+            <!-- PAGE 2: Machine Learning Analysis Dashboard -->
+            <section id="page-dashboard" class="page-section">
+                <header class="page-header flex-header">
+                    <div class="header-text">
+                        <div class="badge-tag tag-success">Model Analysis Complete</div>
+                        <h1>Predictive Analytics Dashboard</h1>
+                        <p class="subtitle">Detailed academic projection, risk analysis, and optimized learning recommendations generated by the model.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-secondary" onclick="switchTab('predict')"><i data-lucide="arrow-left"></i> Edit Data</button>
+                        <button class="btn-secondary" id="btn-print" onclick="window.print()"><i data-lucide="printer"></i> Print</button>
+                        <button class="btn-primary" id="btn-download-pdf" onclick="triggerPDFDownload()"><i data-lucide="download"></i> Download Report</button>
+                    </div>
+                </header>
+
+                <div class="dashboard-grid">
+                    
+                    <!-- Student Summary Card (Profile Style) -->
+                    <div class="glass-card summary-card flex-col-card">
+                        <div class="summary-avatar-section">
+                            <div class="avatar-glow"></div>
+                            <div class="avatar-container">
+                                <i data-lucide="user-check" class="avatar-icon"></i>
+                            </div>
+                            <h2 id="sum-name">John Doe</h2>
+                            <p class="summary-subtitle" id="sum-id">ID: STU-2026-981</p>
+                            <span class="summary-class-tag" id="sum-class">Grade 12</span>
+                        </div>
+                        
+                        <div class="divider"></div>
+
+                        <div class="summary-details-list">
+                            <div class="sum-item">
+                                <span class="label"><i data-lucide="calendar"></i> Attendance</span>
+                                <span class="val accent-blue" id="sum-attendance">92%</span>
+                            </div>
+                            <div class="sum-item">
+                                <span class="label"><i data-lucide="book-open"></i> Previous Score</span>
+                                <span class="val" id="sum-prevscore">78%</span>
+                            </div>
+                            <div class="sum-item">
+                                <span class="label"><i data-lucide="clock"></i> Self Study</span>
+                                <span class="val" id="sum-selfstudy">15 hrs/wk</span>
+                            </div>
+                            <div class="sum-item">
+                                <span class="label"><i data-lucide="check-square"></i> Assignments</span>
+                                <span class="val" id="sum-assignments">14/15</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Predicted Performance Circle Gauge Card -->
+                    <div class="glass-card prediction-card center-card flex-col-card">
+                        <h3>Predicted Performance</h3>
+                        <div class="gauge-outer">
+                            <svg class="score-gauge" width="160" height="160">
+                                <circle class="gauge-bg" stroke="rgba(255,255,255,0.06)" stroke-width="12" fill="transparent" r="65" cx="80" cy="80"/>
+                                <circle class="gauge-bar" id="score-gauge-bar" stroke="url(#blue-purple-grad)" stroke-width="12" stroke-dasharray="408.4" stroke-linecap="round" fill="transparent" r="65" cx="80" cy="80"/>
+                                <defs>
+                                    <linearGradient id="blue-purple-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#3b82f6" />
+                                        <stop offset="100%" stop-color="#8b5cf6" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="gauge-labels-container">
+                                <span class="gauge-score-value" id="pred-score-text">0%</span>
+                                <span class="gauge-score-label">Predicted Grade</span>
+                            </div>
+                        </div>
+                        <div class="performance-rating-box">
+                            <span class="rating-label">Category Classification:</span>
+                            <span class="status-badge" id="pred-category-badge">Excellent</span>
+                        </div>
+                    </div>
+
+                    <!-- Academic Risk Assessment Card -->
+                    <div class="glass-card risk-card center-card flex-col-card">
+                        <h3>Academic Risk Assessment</h3>
+                        <div class="gauge-outer">
+                            <svg class="risk-gauge" width="160" height="160">
+                                <path class="gauge-arc-bg" d="M 30,120 A 60,60 0 1,1 130,120" stroke="rgba(255,255,255,0.06)" stroke-width="12" stroke-linecap="round" fill="none"/>
+                                <path class="gauge-arc-bar" id="risk-gauge-bar" d="M 30,120 A 60,60 0 1,1 130,120" stroke="#10b981" stroke-width="12" stroke-dasharray="282.7" stroke-dashoffset="282.7" stroke-linecap="round" fill="none"/>
+                            </svg>
+                            <div class="gauge-labels-container is-risk">
+                                <span class="risk-level-text" id="risk-level-text">Low Risk</span>
+                                <span class="gauge-score-label">Dropout / Failure Risk</span>
+                            </div>
+                        </div>
+                        <div class="risk-rating-box">
+                            <span class="rating-label">Intervention Priority:</span>
+                            <span class="status-badge" id="risk-priority-badge">Low</span>
+                        </div>
+                    </div>
+
+                    <!-- Performance Factors Analysis (Positive & Negative Drivers) -->
+                    <div class="glass-card positive-factors-card factor-list-card">
+                        <div class="card-title-bar">
+                            <div class="card-icon-wrapper emerald-icon"><i data-lucide="check-circle2"></i></div>
+                            <h3>Positive Performance Drivers</h3>
+                        </div>
+                        <ul class="driver-list" id="positive-driver-list">
+                            <!-- Populated dynamically -->
+                            <li><i data-lucide="check" class="text-success"></i> High attendance records (92%)</li>
+                            <li><i data-lucide="check" class="text-success"></i> Strong past exam scores</li>
+                            <li><i data-lucide="check" class="text-success"></i> Consistent homework completion</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card negative-factors-card factor-list-card">
+                        <div class="card-title-bar">
+                            <div class="card-icon-wrapper red-icon"><i data-lucide="x-circle"></i></div>
+                            <h3>Risk Elements (Negative Drivers)</h3>
+                        </div>
+                        <ul class="driver-list" id="negative-driver-list">
+                            <!-- Populated dynamically -->
+                            <li><i data-lucide="x" class="text-danger"></i> Limited daily study hours</li>
+                            <li><i data-lucide="x" class="text-danger"></i> Poor preparation levels</li>
+                        </ul>
+                    </div>
+
+                    <!-- Strengths and Weaknesses -->
+                    <div class="glass-card strengths-card factor-list-card">
+                        <div class="card-title-bar">
+                            <div class="card-icon-wrapper blue-icon"><i data-lucide="thumbs-up"></i></div>
+                            <h3>Academic Strengths (ML Detected)</h3>
+                        </div>
+                        <ul class="driver-list" id="strengths-list">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+
+                    <div class="glass-card weaknesses-card factor-list-card">
+                        <div class="card-title-bar">
+                            <div class="card-icon-wrapper yellow-icon"><i data-lucide="alert-circle"></i></div>
+                            <h3>Areas for Improvement</h3>
+                        </div>
+                        <ul class="driver-list" id="weaknesses-list">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+
+                    <!-- Charts Dashboard Grid (Spans Full Width on Small, Custom Grid on Large) -->
+                    <div class="charts-header-divider">
+                        <h3>Interactive Analytics Dashboard Visualization</h3>
+                        <p>ML feature weights and contextual comparison models</p>
+                    </div>
+
+                    <!-- Chart 1: Attendance Analysis (Bar Chart) -->
+                    <div class="glass-card chart-container-card">
+                        <div class="chart-info">
+                            <h4>Attendance Analysis</h4>
+                            <p>Student's attendance vs class benchmark</p>
+                        </div>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="chart-attendance"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Study Hours Analysis (Bar Chart) -->
+                    <div class="glass-card chart-container-card">
+                        <div class="chart-info">
+                            <h4>Study Hours Allocation</h4>
+                            <p>Weekly/daily hours vs suggested targets</p>
+                        </div>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="chart-study-hours"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 3: Previous vs Predicted Score (Comparison Chart) -->
+                    <div class="glass-card chart-container-card">
+                        <div class="chart-info">
+                            <h4>Score Projection Comparison</h4>
+                            <p>Historical exam metrics vs ML predicted score</p>
+                        </div>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="chart-score-compare"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 4: Academic Factors Contribution (Pie Chart) -->
+                    <div class="glass-card chart-container-card">
+                        <div class="chart-info">
+                            <h4>Feature Group Contribution</h4>
+                            <p>Relative impact weight of factor categories on prediction</p>
+                        </div>
+                        <div class="chart-canvas-wrapper doughnut-wrapper">
+                            <canvas id="chart-factors-pie"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 5: Performance Trend (Line Chart) -->
+                    <div class="glass-card chart-container-card span-two-cols">
+                        <div class="chart-info">
+                            <h4>Performance Growth & Projection Trend</h4>
+                            <p>Progression timeline: historical exams leading up to predicted outcome</p>
+                        </div>
+                        <div class="chart-canvas-wrapper line-wrapper">
+                            <canvas id="chart-trend-line"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Personalized Improvement Suggestions -->
+                    <div class="glass-card recommendations-panel span-two-cols">
+                        <div class="card-title-bar">
+                            <div class="card-icon-wrapper purple-icon"><i data-lucide="clipboard-list"></i></div>
+                            <div>
+                                <h3>ML-Generated Personalized Recommendations</h3>
+                                <p class="panel-subtitle">Actionable pathways synthesized by the decision trees optimization model</p>
+                            </div>
+                        </div>
+                        <div class="recommendations-container" id="recommendations-grid">
+                            <!-- Populated dynamically with modern mini-cards -->
+                        </div>
+                    </div>
+
+                    <!-- Performance Prediction Confidence Details -->
+                    <div class="glass-card confidence-metrics-card span-two-cols">
+                        <div class="confidence-grid">
+                            <div class="confidence-stat-item">
+                                <span class="stat-label">Model Confidence Score</span>
+                                <div class="stat-progress-bar">
+                                    <div class="progress-fill fill-blue" id="confidence-score-bar" style="width: 94%;"></div>
+                                </div>
+                                <span class="stat-value" id="confidence-score-val">94.2%</span>
+                            </div>
+                            <div class="confidence-stat-item">
+                                <span class="stat-label">Prediction Reliability</span>
+                                <div class="stat-badge-row">
+                                    <i data-lucide="shield-check" class="text-success"></i>
+                                    <span class="reliability-text text-success" id="reliability-val">High Reliability</span>
+                                </div>
+                            </div>
+                            <div class="confidence-stat-item">
+                                <span class="stat-label">Model Inference Engine</span>
+                                <span class="model-tech-badge">Random Forest Regressor</span>
+                            </div>
+                            <div class="confidence-stat-item">
+                                <span class="stat-label">Data Quality Rating</span>
+                                <div class="rating-stars" id="quality-rating-stars">
+                                    <i data-lucide="star" class="star-filled"></i>
+                                    <i data-lucide="star" class="star-filled"></i>
+                                    <i data-lucide="star" class="star-filled"></i>
+                                    <i data-lucide="star" class="star-filled"></i>
+                                    <i data-lucide="star" class="star-filled"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer Section Page 2 -->
+                <div class="dashboard-footer-actions">
+                    <button class="btn-primary large-action" onclick="resetAndBackToForm()">
+                        <i data-lucide="user-plus"></i> Analyze Another Student
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- PAGE 3: Machine Learning Model Metrics -->
+            <section id="page-insights" class="page-section">
+                <header class="page-header">
+                    <div class="header-text">
+                        <div class="badge-tag">Metadata</div>
+                        <h1>Model Architecture & Performance</h1>
+                        <p class="subtitle">Technical parameters, feature importance, validation matrices, and validation scores for the training model.</p>
+                    </div>
+                </header>
+
+                <div class="dashboard-grid">
+                    
+                    <!-- Feature Importance Card -->
+                    <div class="glass-card span-two-cols chart-container-card">
+                        <div class="chart-info">
+                            <h4>Feature Importance (Gini Index)</h4>
+                            <p>Global weights of student habits and metrics within the classifier node splits</p>
+                        </div>
+                        <div class="chart-canvas-wrapper" style="height: 350px;">
+                            <canvas id="chart-feature-importance"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Model Evaluation Metrics Card -->
+                    <div class="glass-card flex-col-card">
+                        <h3>Model Evaluation Metrics</h3>
+                        <p class="card-subtitle-text">Performance indicators verified against the test partition (30% holdout)</p>
+                        <div class="metrics-list-table">
+                            <div class="metric-row">
+                                <span class="metric-name">R-squared (R²)</span>
+                                <span class="metric-value font-mono">0.892</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Mean Squared Error (MSE)</span>
+                                <span class="metric-value font-mono">4.12%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Mean Absolute Error (MAE)</span>
+                                <span class="metric-value font-mono">1.84%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Classification F1 Score</span>
+                                <span class="metric-value font-mono">0.938</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Dataset Splits (Train/Test)</span>
+                                <span class="metric-value font-mono">70 / 30</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Total Samples Count</span>
+                                <span class="metric-value font-mono">12,480 Students</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confusion Matrix Card -->
+                    <div class="glass-card flex-col-card">
+                        <h3>Classification Confusion Matrix</h3>
+                        <p class="card-subtitle-text">Model prediction matches vs actual performance categories</p>
+                        
+                        <div class="matrix-wrapper">
+                            <div class="matrix-grid">
+                                <div></div>
+                                <div class="matrix-header-label">Ex</div>
+                                <div class="matrix-header-label">Gd</div>
+                                <div class="matrix-header-label">Av</div>
+                                <div class="matrix-header-label">Pr</div>
+
+                                <div class="matrix-row-label">Ex</div>
+                                <div class="matrix-cell diag-cell" title="94% correct">94%</div>
+                                <div class="matrix-cell" title="5% error">5%</div>
+                                <div class="matrix-cell" title="1% error">1%</div>
+                                <div class="matrix-cell" title="0% error">0%</div>
+
+                                <div class="matrix-row-label">Gd</div>
+                                <div class="matrix-cell" title="4% error">4%</div>
+                                <div class="matrix-cell diag-cell" title="91% correct">91%</div>
+                                <div class="matrix-cell" title="5% error">5%</div>
+                                <div class="matrix-cell" title="0% error">0%</div>
+
+                                <div class="matrix-row-label">Av</div>
+                                <div class="matrix-cell" title="0% error">0%</div>
+                                <div class="matrix-cell" title="6% error">6%</div>
+                                <div class="matrix-cell diag-cell" title="89% correct">89%</div>
+                                <div class="matrix-cell" title="5% error">5%</div>
+
+                                <div class="matrix-row-label">Pr</div>
+                                <div class="matrix-cell" title="0% error">0%</div>
+                                <div class="matrix-cell" title="0% error">0%</div>
+                                <div class="matrix-cell" title="8% error">8%</div>
+                                <div class="matrix-cell diag-cell" title="92% correct">92%</div>
+                            </div>
+                            <div class="matrix-legend">
+                                <span class="legend-item"><span class="color-box diag"></span> True Positives (Diag)</span>
+                                <span class="legend-item"><span class="color-box err"></span> Errors (Off-Diag)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROC-AUC Curve and technical details -->
+                    <div class="glass-card span-two-cols chart-container-card">
+                        <div class="chart-info">
+                            <h4>ROC-AUC Multi-Class Evaluation</h4>
+                            <p>Sensitivity vs Specificity per rating class (Area Under Curve metrics)</p>
+                        </div>
+                        <div class="chart-canvas-wrapper" style="height: 320px;">
+                            <canvas id="chart-roc-curve"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Floating Action Button for quick student data auto-fill tutorial helper -->
+    <div class="fab-help-menu" id="fab-menu">
+        <button class="fab-main-btn" onclick="toggleFabMenu()" title="Dashboard Options">
+            <i data-lucide="help-circle" id="fab-icon"></i>
+        </button>
+        <div class="fab-options" id="fab-options">
+            <button class="fab-opt-btn" onclick="switchTab('predict'); quickFillDemoData('star')" title="Load Star Student"><i data-lucide="trophy" class="text-success"></i></button>
+            <button class="fab-opt-btn" onclick="switchTab('predict'); quickFillDemoData('average')" title="Load Average Student"><i data-lucide="users" class="text-warning"></i></button>
+            <button class="fab-opt-btn" onclick="switchTab('predict'); quickFillDemoData('risk')" title="Load At-Risk Student"><i data-lucide="alert-triangle" class="text-danger"></i></button>
+        </div>
+    </div>
+
+    <!-- Prediction Loading Screen Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loader-content-box">
+            <div class="loader-visual">
+                <div class="loader-pulse-ring"></div>
+                <i data-lucide="brain" class="loader-pulse-icon"></i>
+            </div>
+            <h2>Running ML Inference Engine</h2>
+            <p>Fitting decision boundaries and predicting academic yields...</p>
+            
+            <div class="loader-progress-tracker">
+                <div class="loader-bar">
+                    <div class="loader-bar-fill" id="loader-bar-fill"></div>
+                </div>
+            </div>
+            
+            <ul class="loader-logs" id="loader-logs">
+                <li id="log-1"><i data-lucide="check" class="log-ok invisible"></i> Validating Input Data...</li>
+                <li id="log-2"><i data-lucide="check" class="log-ok invisible"></i> Preparing Features...</li>
+                <li id="log-3"><i data-lucide="check" class="log-ok invisible"></i> Running Machine Learning Model...</li>
+                <li id="log-4"><i data-lucide="check" class="log-ok invisible"></i> Generating Performance Analysis...</li>
+                <li id="log-5"><i data-lucide="check" class="log-ok invisible"></i> Prediction Complete</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- Hidden Print Report Card Layout -->
+    <div class="print-report-container" id="printable-report">
+        <div class="print-header">
+            <div class="print-brand">
+                <h2>STUDENT PERFORMANCE ANALYSIS SYSTEM</h2>
+                <p>AI Predictive Modeling & Educational Advisory Services</p>
+            </div>
+            <div class="print-date" id="print-date-stamp">
+                Date Generated: June 8, 2026
+            </div>
+        </div>
+
+        <hr class="print-divider">
+
+        <h3 class="print-title">OFFICIAL PREDICTIVE DIAGNOSTIC REPORT</h3>
+        
+        <table class="print-table">
+            <thead>
+                <tr>
+                    <th colspan="4" class="table-section-title">Student Profile Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Student Name:</strong></td>
+                    <td id="print-name">John Doe</td>
+                    <td><strong>Student ID:</strong></td>
+                    <td id="print-id">STU-2026-981</td>
+                </tr>
+                <tr>
+                    <td><strong>Age / Gender:</strong></td>
+                    <td id="print-age-gender">18 / Male</td>
+                    <td><strong>Class Grade:</strong></td>
+                    <td id="print-class">Grade 12</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="print-table">
+            <thead>
+                <tr>
+                    <th colspan="4" class="table-section-title">Academic Input Metrics</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Attendance Percentage:</strong></td>
+                    <td id="print-attendance">92%</td>
+                    <td><strong>Previous Score:</strong></td>
+                    <td id="print-prev-score">78%</td>
+                </tr>
+                <tr>
+                    <td><strong>Assignments Completed:</strong></td>
+                    <td id="print-assignments">14/15</td>
+                    <td><strong>Subjects Failed:</strong></td>
+                    <td id="print-failed">0</td>
+                </tr>
+                <tr>
+                    <td><strong>Daily Study Hours:</strong></td>
+                    <td id="print-daily-study">4 Hours</td>
+                    <td><strong>Weekly Self Study:</strong></td>
+                    <td id="print-self-study">15 Hours</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="print-score-banner">
+            <div class="print-score-item">
+                <span class="item-label">Predicted Final Grade</span>
+                <span class="item-value" id="print-pred-score">85%</span>
+            </div>
+            <div class="print-score-item">
+                <span class="item-label">Academic Standing Category</span>
+                <span class="item-value" id="print-pred-category">Good</span>
+            </div>
+            <div class="print-score-item">
+                <span class="item-label">Academic At-Risk Assessment</span>
+                <span class="item-value" id="print-pred-risk">Low Risk</span>
+            </div>
+        </div>
+
+        <div class="print-section">
+            <h4>Machine Learning Diagnosis</h4>
+            <div class="print-grid-two-cols">
+                <div>
+                    <h5>Academic Strengths Detected</h5>
+                    <ul class="print-list" id="print-strengths-list">
+                        <!-- Dynamic -->
+                    </ul>
+                </div>
+                <div>
+                    <h5>Areas Demanding Attention</h5>
+                    <ul class="print-list" id="print-weaknesses-list">
+                        <!-- Dynamic -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="print-section page-break-before">
+            <h4>Personalized Educational Action Plan</h4>
+            <div class="print-recommendations-list" id="print-recs-list">
+                <!-- Dynamic -->
+            </div>
+        </div>
+
+        <div class="print-footer">
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <p>AI Analytics Engine Validation</p>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <p>Academic Advisor Signature</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core App JS -->
+    <script src="app.js"></script>
+</body>
+</html>
