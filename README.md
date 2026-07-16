@@ -1,5 +1,6 @@
 # 📈 Student Performance Analysis System (SPAS)
 
+[![Live App](https://img.shields.io/badge/Live_App-Deployed-success?style=for-the-badge&logo=vercel)](https://spas-zeta.vercel.app)
 ![Python 3.10](https://img.shields.io/badge/Python-3.10-blue?style=flat&logo=python)
 ![Scikit-Learn](https://img.shields.io/badge/Machine%20Learning-Scikit--Learn-orange)
 ![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-red)
